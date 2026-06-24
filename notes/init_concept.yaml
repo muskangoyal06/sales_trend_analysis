@@ -1,0 +1,299 @@
+Let's forget about `__name__` and `__main__` for a moment and think about a real-world example.
+
+# Imagine You Have a TV
+
+The TV has many components inside:
+
+* Screen
+* Speakers
+* Remote sensor
+* Power button
+
+But when you press the power button, you want the TV to start running.
+
+In Python:
+
+```python
+def main():
+    print("TV is starting")
+```
+
+`main()` is like the power button. It contains the code that starts your program.
+
+# Without `if __name__ == "__main__":`
+
+Suppose you write:
+
+```python
+def main():
+    print("Sales Analysis Started")
+
+main()
+```
+
+When Python reads the file, it executes lines from top to bottom.
+# File
+```text
+Step 1: Define main()
+Step 2: Execute main()
+```
+
+Output:
+
+```text
+Sales Analysis Started
+```
+
+This works fine.
+
+
+# The Problem
+
+Let's say later you create another file:
+
+# sales_analysis.py
+
+```python
+def main():
+    print("Sales Analysis Started")
+
+main()
+```
+
+# test.py
+
+```python
+import sales_analysis
+
+print("Testing...")
+```
+
+Now run:
+
+```bash
+python test.py
+```
+
+You might expect:
+
+```text
+Testing...
+```
+
+But you get:
+
+```text
+Sales Analysis Started
+Testing...
+```
+
+Why?
+
+Because when Python imports a file, it executes everything outside functions.
+
+So:
+
+```python
+main()
+```
+
+runs automatically during import.
+
+
+# The Solution
+
+Instead write:
+
+```python
+def main():
+    print("Sales Analysis Started")
+
+if __name__ == "__main__":
+    main()
+```
+
+Now run:
+
+```bash
+python test.py
+```
+
+Output:
+
+```text
+Testing...
+```
+
+The analysis does not start.
+
+
+# What is `__name__`?
+
+Python secretly creates a variable:
+
+```python
+__name__
+```
+for every file.
+
+You can check it:
+
+```python
+print(__name__)
+```
+
+# When the file is run directly
+
+```bash
+python sales_analysis.py
+```
+
+Python says:
+
+```python
+__name__ = "__main__"
+```
+
+So:
+
+```python
+if __name__ == "__main__":
+```
+
+becomes:
+
+```python
+if "__main__" == "__main__":
+```
+
+which is:
+
+```python
+True
+```
+
+Therefore:
+
+```python
+main()
+```
+runs.
+
+# When the file is imported
+
+```python
+import sales_analysis
+```
+
+Python says:
+
+```python
+__name__ = "sales_analysis"
+```
+
+Now:
+
+```python
+if __name__ == "__main__":
+```
+
+becomes:
+
+```python
+if "sales_analysis" == "__main__":
+```
+
+which is:
+
+```python
+False
+```
+
+Therefore:
+
+```python
+main()
+```
+does not run.
+
+
+# A Simpler Mental Model
+
+Think of:
+
+```python
+if __name__ == "__main__":
+```
+
+as:
+
+```python
+if this_file_is_being_run_directly:
+```
+
+Example:
+
+```python
+if this_file_is_being_run_directly:
+    start_program()
+```
+
+Python doesn't actually have a variable called:
+
+```python
+this_file_is_being_run_directly
+```
+
+so it uses:
+
+```python
+__name__ == "__main__"
+```
+
+instead.
+
+
+# For Your Current Project
+
+Right now your code probably looks like:
+
+```python
+import pandas as pd
+
+df = pd.read_csv("train.csv")
+
+# cleaning code
+# analysis code
+```
+
+This is perfectly fine for learning. As your project grows, you'll move toward:
+
+```python
+import pandas as pd
+
+def main():
+    df = pd.read_csv("train.csv")
+
+    # cleaning
+    # analysis
+    # visualizations
+
+if __name__ == "__main__":
+    main()
+```
+
+Why?
+
+Because later you might want to import some of your functions into another file without 
+accidentally running the entire analysis.
+
+# Beginner Rule
+
+For now, remember just one sentence:
+
+> `if __name__ == "__main__":` tells Python to run the program only when the file is executed 
+directly, not when it is imported into another file.
+
+That's all you need at this stage. 
+Once you start creating multiple Python files and modules, 
+the importance of this pattern will become much more obvious.

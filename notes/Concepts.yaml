@@ -1,0 +1,216 @@
+Step 1: Import the CSV module
+
+- Python provides a built-in module called csv.
+- This module contains functions for reading and writing CSV 
+  (Comma-Separated Values) files.
+- Importing it makes its functionality available in your program.
+
+Step 2: Open the CSV file
+- with open('data.csv', 'r') as file:
+
+- 'open()' opens the file named data.csv.
+- 'r' means read mode, so you can read the file but not modify it.
+- 'with' automatically closes the file when you're finished using it.
+- 'file' is a variable that refers to the opened file.
+
+Step 3: Create a CSV reader object
+- reader = csv.reader(file)
+
+- 'csv.reader()' reads the file and interprets each line as a CSV row.
+- The result is a reader object that can be processed one row at a time.
+
+Step 4: Loop through each row
+- for row in reader:
+
+- The for loop processes one row at a time.
+- On each iteration, row contains a list of values from a single line of the CSV file.
+
+Step 5: Print each row
+- print(row)
+
+
+
+OR:
+
+
+
+Step 1: Import the pandas module
+- pandas is a Python library used for working with tabular data.
+- 'as pd' creates a shorter alias, so you can write pd.read_csv() instead of pandas.read_csv().
+
+Step 2: Read the CSV file
+- df = pd.read_csv('data.csv')
+
+- Pandas opens the file data.csv.
+- It reads the contents.
+- It treats the first row as column names by default.
+- It stores the data in a DataFrame called df.
+
+Step 3: Print the DataFrame
+- print(df)
+
+- Print only top 5 rows:
+- print(df.head())
+
+- Print user required number of rows:
+- print(df.head(num))
+Ex: print(df.head(12))
+
+Step 4: Identify the missing values
+- print(df.isnull().sum())
+
+- df.isnull(): 'isnull()' checks every cell.
+  - If a value is missing → True
+  - If a value exists → False
+
+Pandas creates a new DataFrame of the same shape with values True or False depending on the above 
+condition. But nothing has been counted yet.
+
+- What is .sum() doing:
+- '.sum()' adds each column vertically.
+- The default behavior is: df.sum(axis=0)
+- where 'axis= 0' means: Move down the rows and sum each column. It will tell us if there is any
+                         missing values in each of the columns.
+- If we use: df.sum(axis = 1)
+- This means it will not move towards the right of each row and sum them. 
+  It will tell us if there is any missing value in each of the rows. 
+
+- The result of Step 4 is a Pandas Series. We can also access particular values from this series
+  just like any other data set.
+
+- Print only the columns that have atleast 1 missing value: 
+df_null_columns = df.isnull().sum()
+print(df_null_columns[df_null_columns > 0])
+
+Step 5: Calculate missing percentage
+- Also print the percentage of missing values (mostly used by Analysts)
+- Divide the sum of missing values by total number of rows
+- then multiply by 100 to get the percentage.
+- You can use round(): to get the value to the nearest 'n' decimal points.
+Ex: round(2)
+
+IMP: Since Postal Code is missing an dit does not hold much importance in our Analysis, 
+     we can either leave it as it is or give value like '0' or 'Unknown' or 'NA'.
+
+    - Here, the Postal Code column contained 11 missing values, representing 0.11% of the dataset. 
+      Given the low proportion of missing data and the fact that Postal Code was not a key variable 
+      for the sales performance and trend analyses, these missing values were retained without 
+      imputation and were excluded from any location-specific analysis requiring postal code 
+      information.
+
+You can verify that Region and State are still present for those rows:
+- df[df['Postal Code'].isnull()][['City', 'State', 'Region']]
+- printing only the specific columns where postal code is null.
+
+Step 6: Check for Duplicate rows
+- df.duplicated()
+- find the sum of all the duplicated rows: df.duplicated().sum()
+
+- Here, there are no duplicate rows.
+
+Step 7: Verify data types
+- Pandas stores each column as a Series.
+- For each column it determines the datatype.
+- df.dtypes
+
+Step 8: Convert date columns
+- Currently they are of object datatype
+- Even though the values look like dates, Pandas is treating them as strings (text).
+- That is why we need to convert them.
+
+Why is that a problem: 
+- Suppose the dates are:
+  - 01/15/2018
+  - 02/20/2018
+
+As strings, Pandas cannot easily:
+- Extract month
+- Extract year
+- Calculate time differences
+- Sort chronologically reliably
+- Group by month/year
+
+- So we need to convert them to datatime datatype.
+- Here we need to convert 'Order Date' and 'Ship Date'
+
+- First we will inspect the date columns to check the format in which they already are
+- print(df[['Order Date','Ship Date']].head())
+- Currently: 16/06/2017
+  - Which means: %d/%m/%y (current format)
+
+Now: convert it
+- df['Order Date'] = pd.to_datetime(df['Order Date'],format='%d/%m/%Y')
+- df['Ship Date'] = pd.to_datetime(df['Ship Date'],format='%d/%m/%Y')
+
+Why use format='%d/%m/%Y': to tell the current format
+- Because it's:
+  - Faster than letting Pandas guess.
+  - More reliable.
+  - Good practice in a portfolio project because you're explicitly documenting the date format.
+
+1. Calculate Total Sales: Find the total revenue generated by all orders.
+
+- total_sales = df['Sales'].sum()
+- print(f"Total Sales: {total_sales}"):
+  - print() displays output on the screen. Whatever is inside the parentheses gets printed.
+  - The 'f' stands for formatted string literal (or f-string). 
+    It allows you to insert variable values directly into a string.
+  - Anything inside curly braces {} is evaluated by Python.
+    Python replaces {total_sales} with the current value of the variable total_sales.
+  
+2. Monthly Sales: Find how much revenue was generated each month.
+
+- first we will extract the month and year from the Order Date
+- df['Order Date'].dt.to_period('M')
+- .dt is a Pandas accessor that allows you to work with date and time values.
+  It only works if the column is of type datetime.
+- 'M' means Month. 'to_period' extracts the year and month from each date.
+  'Y' means year, to extract only the year.
+
+- Can also use 
+  'df['Order Date'].dt.day' to extract only the day.
+  'df['Order Date'].dt.month' to extract only the month.
+  'df['Order Date'].dt.year' to extract only the year.
+
+- Also if we want moth name instead of month number:
+  df['Order Date'].dt.month_name()
+
+- Group the sales by the month: 
+- df.groupby('Month'), where 'Month' is the new column to store the moth and the year only.
+- Groups rows by the Month column.
+- Creates a GroupBy object.
+
+- Sum the sales value in each groupby
+- grouped['Sales'].sum(), where 'grouped' is the new variables for storing grouped data.
+- grouped['Sales']: Selects the Sales column from each group.
+- .sum()- Adds up the sales values within each group.
+
+Same way we can find the yearly sales.
+
+3. Top Selling Prodcuts: Find products generating the highest sales.
+
+- group dataset by the Product names
+  grouped_products = df.groupby('Product Name')
+- sum all the sales of each product
+  product_sales = grouped_products['Sales'].sum()
+- Here, product_sales contains total sales for each product.
+- This is a Pandas Series, where:
+  - The index is the product name.
+  - The value is the total sales.
+
+- sort the values in descending orders 
+  top_product_sales = product_sales.sort_values(ascending = False)
+- sort_values() sorts the values from smallest to largest by default (ascending order)
+- ascending=False → largest to smallest
+
+IMP:
+  In Pandas, we use sort_values() because Pandas objects (Series and DataFrame) have a method 
+  called sort_values(). There is no Pandas method called sort() for sorting rows or values.
+
+  Since Pandas can sort either:
+    - values → sort_values()
+    - index labels → sort_index()
+  the method name explicitly tells Pandas what you want to sort.
+ 
+  Because product_sales is a Pandas Series, and Pandas uses sort_values() to sort 
+  the actual data values from highest to lowest.

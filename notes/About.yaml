@@ -1,0 +1,35 @@
+Goal
+- Analyze sales performance over time and identify trends.
+
+Dataset
+- Use a public dataset such as:
+  •	Kaggle Datasets 
+  •	Search for "Superstore Sales Dataset". 
+
+Steps
+  1.	Load CSV with Pandas. 
+  2.	Clean missing values. 
+  3. Check for duplicate rows.
+  4. Verify data types 
+  5. Convert date columns.
+  6. Check Categorical columns
+  7.Remove leading or trailing spaces.
+Many more cleaning processes depending on the criticality and dataset and analysis.	 
+  8.	Calculate: 
+    •	Total sales 
+    •	Monthly sales 
+    •	Top-selling products 
+    •	Top regions 
+  9.	Create visualizations: 
+    •	Sales by month 
+    •	Sales by category 
+    •	Profit by region 
+  10.	Write 5 business insights. 
+
+Skills Demonstrated
+•	Pandas 
+•	Data cleaning 
+•	GroupBy 
+•	Visualization 
+•	Business analysis
+
