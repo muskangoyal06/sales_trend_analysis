@@ -88,7 +88,7 @@ def generate_data_quality_report(df):
     if total_duplicates > 0:
         print(f"\nNumber of duplicate rows present: {total_duplicates}")
         print("\n Removing duplicate rows")
-        df = df.drop_dupliactes()   
+        df = df.drop_duplicates()   
     else:
         print("\nNo duplicate rows found.")
     
@@ -96,7 +96,9 @@ def generate_data_quality_report(df):
     print("\n Data types brfore conversion: ", df.dtypes)
     df = date_conversion(df)
     print("\n Date types after conversion: ", df.dtypes)
-    
+    print("\n")
+    print(type(df))
+    return df
     
     
 if __name__ == "__main__":

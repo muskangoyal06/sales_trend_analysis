@@ -1,4 +1,5 @@
 import data_cleaning
+import pandas as pd
 
 #Function for calculating the total sales
 def calculate_total_sales(df):
@@ -10,7 +11,8 @@ def calculate_total_sales(df):
 #Function for calculating monthly sales
 def calculate_monthly_sales(df):
     #Extract month
-    df['Month'] = df['Order Date'].dt.month_name()
+    df['Month'] = df['Order Date'].dt.month
+    
 
     #Group the sales by the month
     grouped_month = df.groupby('Month')
