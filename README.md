@@ -146,11 +146,13 @@ Sales-Trend-Analysis/
 ├── train.csv
 ├── data_cleaning.py
 ├── sales_analysis.py
+├── sales_trend_visualization.py
 ├── main.py
 ├── visualizations/
 │   ├── monthly_sales.png
+│   ├── yearly_sales.png
 │   ├── category_sales.png
-│   └── profit_by_region.png
+│   └── orders_by_region.png
 └── requirements.txt
 ```
 
