@@ -10,6 +10,7 @@ df = generate_data_quality_report(df)
 
 print(df.head())
 
+
 # ==================================================
 # VISUALIZATION 1: SALES BY MONTH
 # ==================================================
@@ -25,10 +26,6 @@ print(monthly_sales.head())
 #to change the month cloumn to month names
 #convert it to date time type first and then convert to month name
 monthly_sales['Month'] = pd.to_datetime(monthly_sales['Month'], format='%m').dt.month_name()
-
-#check the datatype of the columns
-print("Before Conversion\n", monthly_sales.dtypes)
-print(type(monthly_sales['Month'].iloc[0]))
 
 #assigning the figure size of the graph
 plt.figure(figsize = (10,5))
@@ -56,7 +53,7 @@ plt.tight_layout()
 plt.show()
 
 # ==================================================
-# VISUALIZATION 1: SALES BY YEAR
+# VISUALIZATION 2: SALES BY YEAR
 # ==================================================
 
 #import yearly_sales from the sales analysis file
@@ -92,4 +89,85 @@ plt.ylabel("Total Sales")
 plt.tight_layout()
 
 #showing the graph
+plt.show()
+
+
+# ==================================================
+# VISUALIZATION 3: SALES BY CATEGORY
+# ==================================================
+
+#Group the sales by the category
+grouped_category = df.groupby('Category')
+
+#sum all the sales in each group which will lead to categorical sales
+categorical_sales = round(grouped_category['Sales'].sum(), 2)
+
+print(categorical_sales)
+
+#Reset the index
+categorical_sales = categorical_sales.reset_index()
+
+#assigning the figure size of the graph
+plt.figure(figsize = (5,5))
+
+#Generate different colors automatically
+colors= plt.cm.tab10(range(len(categorical_sales)))
+
+#plot the bar graph
+plt.bar(categorical_sales['Category'], categorical_sales['Sales'], color = colors)
+
+#Provide the total sales value on top of each chart
+for x,y in zip(categorical_sales['Category'], categorical_sales['Sales']):
+    plt.annotate(str(y), (x,y), ha = 'center', textcoords= 'offset points', xytext = (0,8))
+    
+#Give it a tile
+plt.title("Total Sales v/s Category")
+
+#Give label
+plt.xlabel("Category")
+plt.ylabel("Total Sales")
+
+#tighten the layout for spacing
+plt.tight_layout()
+
+#Show the bar graph
+plt.show()
+
+
+# ==================================================
+# VISUALIZATION 4: ORDER BY REGION
+# ==================================================
+
+#group the regions together
+grouped_region = df.groupby('Region')
+
+#count number of orders in each region
+region_orders = grouped_region['Order ID'].count() 
+
+#reset index
+region_orders = region_orders.reset_index()
+
+print(region_orders)
+
+#assign figure size
+plt.figure(figsize = (12.5,5))
+
+#different colors
+colors = plt.cm.tab10(range(len(region_orders)))
+
+#plot horizontal bar chart
+plt.barh(region_orders['Region'], region_orders['Order ID'], color = colors)
+
+#Provide the total number of orders on top of each chart
+for x,y in zip(region_orders['Region'], region_orders['Order ID']):
+    plt.annotate(str(y), (y,x), va = 'center', textcoords= 'offset points', xytext = (8,0))
+
+#assign title
+plt.title("Total Orders v/s Region")
+
+#assignlabels
+plt.xlabel("Total Orders")
+plt.ylabel("Region")
+
+#show the horizonatl bar chart
 plt.show()
